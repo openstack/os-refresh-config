@@ -1,0 +1,4 @@
+#!/bin/sh
+echo PASS
+echo There will now be an error.
+exit 1
