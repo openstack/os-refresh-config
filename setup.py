@@ -10,10 +10,15 @@ config = {
     'author': 'SpamapS',
     'author_email': 'clint@fewbar.com',
     'url': 'http://github.com/tripleo/os-refresh-config',
-    'version': '0.1',
+    'version': '0.2',
     'packages': [],
-    'scripts': ['os-refresh-config'],
+    'scripts': [],
     'long_description': open('README.md', 'rb').read(),
+    'packages': ['os_refresh_config'],
+    'entry_points': {
+      'console_scripts': [
+          'os-refresh-config = os_refresh_config.os_refresh_config:main']
+    }
 }
 
 setup(**config)
