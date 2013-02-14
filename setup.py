@@ -10,7 +10,7 @@ config = {
     'author': 'SpamapS',
     'author_email': 'clint@fewbar.com',
     'url': 'http://github.com/tripleo/os-refresh-config',
-    'version': '0.3',
+    'version': '0.4',
     'packages': ['os_refresh_config'],
     'scripts': [],
     'long_description': open('README.md', 'rb').read(),
