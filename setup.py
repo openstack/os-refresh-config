@@ -11,7 +11,7 @@ config = {
     'author_email': 'clint@fewbar.com',
     'url': 'http://github.com/tripleo/os-refresh-config',
     'version': '0.2',
-    'packages': [],
+    'packages': ['os_refresh_config'],
     'scripts': [],
     'long_description': open('README.md', 'rb').read(),
     'packages': ['os_refresh_config'],
