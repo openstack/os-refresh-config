@@ -28,7 +28,7 @@ PHASES = ['pre-configure',
           'post-configure']
 
 
-def main(argv):
+def main(argv=sys.argv):
     parser = argparse.ArgumentParser(
         description="""Runs through all of the phases to ensure configuration is
         applied and enabled on a machine. Will exit with an error if any phase has
