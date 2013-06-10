@@ -40,8 +40,6 @@ def main(argv=sys.argv):
                         help='Print base dir and exit')
     parser.add_argument('--print-phases', default=False, action='store_true',
                         help='Print phases (tab separated) and exit')
-    parser.add_argument('--list', default=False, action='store_true',
-                        help='Just show what would be run')
     parser.add_argument('--log-level', default='INFO',
                         choices=['ERROR', 'WARN', 'CRITICAL', 'INFO', 'DEBUG'])
     options = parser.parse_args(argv[1:])
@@ -66,9 +64,7 @@ def main(argv=sys.argv):
         phase_dir = os.path.join(BASE_DIR, '%s.d' % phase)
         log.debug('Checking %s' % phase_dir)
         if os.path.exists(phase_dir):
-            args = ['run-parts', '-v']
-            if options.list:
-                args.append('--list')
+            args = ['dib-run-parts']
             args.append(phase_dir)
             try:
                 log.info('Starting phase %s' % phase)
