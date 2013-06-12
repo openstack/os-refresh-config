@@ -16,8 +16,8 @@ config = {
     'long_description': open('README.md', 'rb').read(),
     'packages': ['os_refresh_config'],
     'entry_points': {
-      'console_scripts': [
-          'os-refresh-config = os_refresh_config.os_refresh_config:main']
+    'console_scripts': [
+        'os-refresh-config = os_refresh_config.os_refresh_config:main']
     }
 }
 
