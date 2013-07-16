@@ -15,10 +15,12 @@
 # under the License.
 
 import argparse
+import fcntl
 import logging
 import os
+import subprocess
 import sys
-from subprocess import check_call, CalledProcessError
+import time
 
 BASE_DIR = os.environ.get('OS_REFRESH_CONFIG_BASE_DIR',
                           '/opt/stack/os-config-refresh')
@@ -42,6 +44,9 @@ def main(argv=sys.argv):
                         help='Print phases (tab separated) and exit')
     parser.add_argument('--log-level', default='INFO',
                         choices=['ERROR', 'WARN', 'CRITICAL', 'INFO', 'DEBUG'])
+    parser.add_argument('--lockfile',
+                        default='/var/run/os-refresh-config.lock',
+                        help='Lock file to prevent multiple running copies.')
     options = parser.parse_args(argv[1:])
 
     if options.print_base:
@@ -60,6 +65,17 @@ def main(argv=sys.argv):
     log.addHandler(handler)
     log.setLevel(options.log_level)
 
+    # Keep open (and thus, locked) for duration of program
+    lock = open(options.lockfile, 'a')
+    try:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except IOError as e:
+        log.error('Could not lock %s. %s' % (options.lockfile, e))
+        return e.errno
+
+    lock.truncate(0)
+    lock.write("Locked by pid==%d at %s\n" % (os.getpid(), time.localtime()))
+
     for phase in PHASES:
         phase_dir = os.path.join(BASE_DIR, '%s.d' % phase)
         log.debug('Checking %s' % phase_dir)
@@ -69,16 +85,19 @@ def main(argv=sys.argv):
             try:
                 log.info('Starting phase %s' % phase)
                 log.debug('Running %s' % args)
-                check_call(args)
+                subprocess.check_call(args, close_fds=True)
                 sys.stdout.flush()
                 sys.stderr.flush()
                 log.info('Completed phase %s' % phase)
-            except CalledProcessError as e:
+            except subprocess.CalledProcessError as e:
                 log.error("during %s phase. [%s]\n" % (phase, e))
                 log.error("Aborting...")
                 return 1
         else:
             log.debug('No dir for phase %s' % phase)
+
+    lock.truncate(0)
+    lock.close()
 
 
 if __name__ == '__main__':
