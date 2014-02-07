@@ -26,8 +26,8 @@ BASE_DIR = os.environ.get('OS_REFRESH_CONFIG_BASE_DIR',
                           '/opt/stack/os-config-refresh')
 PHASES = ['pre-configure',
           'configure',
-          'migration',
-          'post-configure']
+          'post-configure',
+          'migration']
 
 
 def main(argv=sys.argv):
