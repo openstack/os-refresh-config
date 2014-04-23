@@ -98,6 +98,7 @@ def main(argv=sys.argv):
 
     lock.truncate(0)
     lock.close()
+    return 0
 
 
 if __name__ == '__main__':
