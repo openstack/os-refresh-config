@@ -91,6 +91,13 @@ def main(argv=sys.argv):
                 log.info('Completed phase %s' % phase)
             except subprocess.CalledProcessError as e:
                 log.error("during %s phase. [%s]\n" % (phase, e))
+                error_dir = os.path.join(BASE_DIR, 'error.d')
+                if os.path.exists(error_dir):
+                    log.info('Calling error handlers.')
+                    try:
+                        subprocess.call(['dib-run-parts', error_dir])
+                    except OSError:
+                        pass
                 log.error("Aborting...")
                 return 1
         else:
