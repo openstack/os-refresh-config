@@ -22,8 +22,33 @@ import subprocess
 import sys
 import time
 
-BASE_DIR = os.environ.get('OS_REFRESH_CONFIG_BASE_DIR',
-                          '/opt/stack/os-config-refresh')
+OLD_BASE_DIR = '/opt/stack/os-config-refresh'
+DEFAULT_BASE_DIR = '/usr/libexec/os-refresh-config'
+
+
+def default_base_dir():
+    """Determine the default base directory path
+
+    If the OS_REFRESH_CONFIG_BASE_DIR environment variable is set,
+    use its value.
+    Otherwise, prefer the new default path, but still allow the old one for
+    backwards compatibility.
+    """
+    base_dir = os.environ.get('OS_REFRESH_CONFIG_BASE_DIR')
+    if base_dir is None:
+        # NOTE(bnemec): Prefer the new location, but still allow the old one.
+        if os.path.isdir(OLD_BASE_DIR) and not os.path.isdir(DEFAULT_BASE_DIR):
+            logging.warning('Base directory %s is deprecated. The recommended '
+                            'base directory is %s',
+                            OLD_BASE_DIR, DEFAULT_BASE_DIR)
+            base_dir = OLD_BASE_DIR
+        else:
+            base_dir = DEFAULT_BASE_DIR
+    return base_dir
+
+
+BASE_DIR = default_base_dir()
+
 PHASES = ['pre-configure',
           'configure',
           'post-configure',
