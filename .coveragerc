@@ -1,0 +1,7 @@
+[run]
+branch = True
+source = os_refresh_config
+omit = os_refresh_config/tests/*
+
+[report]
+ignore-errors = True
