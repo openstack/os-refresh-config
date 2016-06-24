@@ -116,12 +116,27 @@ exit %(returncode)s
         self._write_script('pre-configure', '20-pre-second', 99)
         self._write_script('configure', '10-conf-first', 0)
         returncode, stdout, stderr = self._run_orc()
-        print(stderr)
         self.assertEqual('\n'.join([
             '10-pre-first starting',
             '10-pre-first done',
             '20-pre-second starting',
             '20-pre-second done',
+            '',
+        ]), stdout)
+        self.assertEqual(1, returncode)
+
+    def test_cmd_with_timeout(self):
+        self._write_script('pre-configure', '10-pre-first', 0, 5)
+        self._write_script('pre-configure', '20-pre-second', 0, 5)
+        self._write_script('configure', '10-conf-first', 0, 5)
+
+        now = time.time()
+        returncode, stdout, stderr = self._run_orc('--timeout', '2',
+                                                   '--log-level', 'DEBUG')
+        # check run time accounts for the 2 seconds timeout
+        self.assertTrue(time.time() - now >= 2.0)
+        self.assertEqual('\n'.join([
+            '10-pre-first starting',
             '',
         ]), stdout)
         self.assertEqual(1, returncode)

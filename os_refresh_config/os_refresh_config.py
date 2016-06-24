@@ -18,9 +18,12 @@ import argparse
 import fcntl
 import logging
 import os
+import signal
 import subprocess
 import sys
 import time
+
+import psutil
 
 OLD_BASE_DIR = '/opt/stack/os-config-refresh'
 DEFAULT_BASE_DIR = '/usr/libexec/os-refresh-config'
@@ -55,6 +58,21 @@ PHASES = ['pre-configure',
           'migration']
 
 
+def timeout():
+    p = psutil.Process()
+    children = list(p.get_children(recursive=True))
+    for child in children:
+        child.kill()
+
+
+def exit(lock, statuscode=0):
+    signal.alarm(0)
+    if lock:
+        lock.truncate(0)
+        lock.close()
+    return statuscode
+
+
 def main(argv=sys.argv):
     parser = argparse.ArgumentParser(
         description="""Runs through all of the phases to ensure
@@ -72,6 +90,10 @@ def main(argv=sys.argv):
     parser.add_argument('--lockfile',
                         default='/var/run/os-refresh-config.lock',
                         help='Lock file to prevent multiple running copies.')
+    parser.add_argument('--timeout',
+                        type=int,
+                        help='Seconds until the current run will be '
+                             'terminated.')
     options = parser.parse_args(argv[1:])
 
     if options.print_base:
@@ -101,6 +123,15 @@ def main(argv=sys.argv):
     lock.truncate(0)
     lock.write("Locked by pid==%d at %s\n" % (os.getpid(), time.localtime()))
 
+    def timeout_handler(signum, frame):
+        log.error('Timeout reached: %ss. Sending SIGKILL to all children' %
+                  options.timeout)
+        timeout()
+
+    if options.timeout:
+        signal.signal(signal.SIGALRM, timeout_handler)
+        signal.alarm(options.timeout)
+
     for phase in PHASES:
         phase_dir = os.path.join(BASE_DIR, '%s.d' % phase)
         log.debug('Checking %s' % phase_dir)
@@ -124,13 +155,11 @@ def main(argv=sys.argv):
                     except OSError:
                         pass
                 log.error("Aborting...")
-                return 1
+                return exit(lock, 1)
         else:
             log.debug('No dir for phase %s' % phase)
 
-    lock.truncate(0)
-    lock.close()
-    return 0
+    return exit(lock)
 
 
 if __name__ == '__main__':
