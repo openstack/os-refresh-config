@@ -3,4 +3,4 @@
 # process, which may cause wedges in the gate later.
 pbr>=1.8 # Apache-2.0
 dib-utils # Apache-2.0
-psutil<2.0.0,>=1.1.1 # BSD
+psutil>=3.0.1 # BSD
