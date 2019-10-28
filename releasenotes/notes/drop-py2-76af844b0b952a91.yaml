@@ -1,0 +1,6 @@
+---
+upgrade:
+  - |
+    Python 2.7 support has been dropped. The last release to support
+    py2.7 is OpenStack Train. The minimum version of Python now supported
+    is Python 3.6.
