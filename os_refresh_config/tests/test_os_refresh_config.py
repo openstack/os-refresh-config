@@ -33,6 +33,6 @@ class TestRefreshConfig(testtools.TestCase):
     def test_default_base_dir_both(self):
         default = '/usr/libexec/os-refresh-config'
         deprecated = '/opt/stack/os-config-refresh'
-        with mock.patch('os.path.isdir', lambda x: (x == default or
-                                                    x == deprecated)):
+        with mock.patch('os.path.isdir', lambda x: (
+                x == default or x == deprecated)):
             self.assertEqual(default, os_refresh_config.default_base_dir())
