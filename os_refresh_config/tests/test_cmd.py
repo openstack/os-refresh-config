@@ -17,11 +17,16 @@ import time
 import fixtures
 import testtools
 
+script_path = os.path.join(
+    os.path.dirname(os.path.realpath(__file__)),
+    '../os_refresh_config.py')
+
 
 class TestCmd(testtools.TestCase):
 
     def setUp(self):
         super(TestCmd, self).setUp()
+        self.assertTrue(os.path.exists(script_path))
         self.useFixture(fixtures.NestedTempfile())
         self.base_dir = self.useFixture(fixtures.TempDir())
         self.lockdir = self.useFixture(fixtures.TempDir())
@@ -44,7 +49,7 @@ class TestCmd(testtools.TestCase):
             'PATH': os.environ.get('PATH')
         }
         cmd_args = [
-            'os-refresh-config',
+            script_path,
             '--lockfile', self.lockfile
         ]
         if args:
