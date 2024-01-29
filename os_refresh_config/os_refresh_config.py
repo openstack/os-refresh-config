@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # Copyright 2013 Hewlett-Packard Development Company, L.P.
 # All Rights Reserved.
 #
@@ -159,7 +158,3 @@ def main(argv=sys.argv):
             log.debug('No dir for phase %s' % phase)
 
     return exit(lock)
-
-
-if __name__ == '__main__':
-    sys.exit(main(sys.argv))
