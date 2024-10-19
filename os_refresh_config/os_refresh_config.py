@@ -114,8 +114,8 @@ def main(argv=sys.argv):
     lock = open(options.lockfile, 'a')
     try:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    except IOError as e:
-        log.error('Could not lock %s. %s' % (options.lockfile, e))
+    except OSError as e:
+        log.error('Could not lock {}. {}'.format(options.lockfile, e))
         return e.errno
 
     lock.truncate(0)
@@ -144,7 +144,7 @@ def main(argv=sys.argv):
                 sys.stderr.flush()
                 log.info('Completed phase %s' % phase)
             except subprocess.CalledProcessError as e:
-                log.error("during %s phase. [%s]\n" % (phase, e))
+                log.error("during {} phase. [{}]\n".format(phase, e))
                 error_dir = os.path.join(BASE_DIR, 'error.d')
                 if os.path.exists(error_dir):
                     log.info('Calling error handlers.')

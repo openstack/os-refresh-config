@@ -22,7 +22,7 @@ from os_refresh_config import os_refresh_config
 
 class TestMain(testtools.TestCase):
     def setUp(self):
-        super(TestMain, self).setUp()
+        super().setUp()
         self.useFixture(fixtures.NestedTempfile())
         td = self.useFixture(fixtures.TempDir())
         self.useFixture(

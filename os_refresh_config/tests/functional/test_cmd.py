@@ -21,7 +21,7 @@ import testtools
 class TestCmd(testtools.TestCase):
 
     def setUp(self):
-        super(TestCmd, self).setUp()
+        super().setUp()
         self.useFixture(fixtures.NestedTempfile())
         self.base_dir = self.useFixture(fixtures.TempDir())
         self.lockdir = self.useFixture(fixtures.TempDir())
