@@ -1,15 +1,10 @@
-========================
-Team and repository tags
-========================
-
-.. image:: https://governance.openstack.org/tc/badges/os-refresh-config.svg
-    :target: https://governance.openstack.org/tc/reference/tags/index.html
-
-.. Change things from this point on
-
 =================
 os-refresh-config
 =================
+
+.. image:: https://governance.openstack.org/tc/badges/os-refresh-config.svg
+
+.. Change things from this point on
 
 `os-refresh-config` uses `dib-run-parts` to run scripts in a
 pre-defined set of directories::
