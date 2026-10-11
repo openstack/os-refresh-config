@@ -1,7 +1,9 @@
 [run]
 branch = True
+parallel = True
 source = os_refresh_config
 omit = os_refresh_config/tests/*
 
 [report]
 ignore_errors = True
+show_missing = True
